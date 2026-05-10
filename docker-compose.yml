@@ -1,0 +1,58 @@
+services:
+
+  # ── One-time OAuth setup ─────────────────────────────────────────────────────
+  # Usage: docker compose run --rm setup
+  setup:
+    build: .
+    image: spotslack
+    container_name: spotslack-setup
+    command: setup
+    # Forward port so Spotify can redirect to localhost:8888/callback
+    ports:
+      - "8888:8888"
+    volumes:
+      - ${SPOTSLACK_CONFIG_DIR:-~/.config/spotslack}:/config
+    environment:
+      - SPOTSLACK_CONFIG=/config/config.json
+    # Network access needed for Spotify + Slack APIs
+    network_mode: host   # simplest for OAuth callback on macOS
+    profiles: [setup]
+
+  # ── Long-running daemon ──────────────────────────────────────────────────────
+  # Usage: docker compose up -d daemon
+  daemon:
+    build: .
+    image: spotslack
+    container_name: spotslack
+    command: []   # default CMD = run daemon
+    restart: unless-stopped
+    volumes:
+      - ${SPOTSLACK_CONFIG_DIR:-~/.config/spotslack}:/config
+    environment:
+      - SPOTSLACK_CONFIG=/config/config.json
+      - TZ=${TZ:-Asia/Jakarta}
+    # No ports needed for normal daemon operation
+    profiles: [daemon]
+
+  # ── Ad-hoc helpers (no profile needed) ──────────────────────────────────────
+  status:
+    build: .
+    image: spotslack
+    container_name: spotslack-status
+    command: status
+    volumes:
+      - ${SPOTSLACK_CONFIG_DIR:-~/.config/spotslack}:/config
+    environment:
+      - SPOTSLACK_CONFIG=/config/config.json
+    profiles: [status]
+
+  clear:
+    build: .
+    image: spotslack
+    container_name: spotslack-clear
+    command: clear
+    volumes:
+      - ${SPOTSLACK_CONFIG_DIR:-~/.config/spotslack}:/config
+    environment:
+      - SPOTSLACK_CONFIG=/config/config.json
+    profiles: [clear]

@@ -1,0 +1,4 @@
+.env
+spotslack
+.idea/
+*.log
