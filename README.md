@@ -64,7 +64,7 @@ Opens browser for Spotify auth (callback on localhost:8888), prompts for Slack t
   "spotify_client_secret": "...",
   "spotify_refresh_token": "...",
   "slack_token": "xoxp-...",
-  "slack_team": "Kitabisa",
+  "slack_team": "<Some Team>",
   "emojis": ["🎧", "🎵", "🎶"]
 }
 ```
